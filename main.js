@@ -21,13 +21,14 @@ async function start(){
 
 async function parseSite(){
   
-  for (let page  = 0; page <= 82; page++) {
+  for (let page  = 1; page <= 82; page++) {
     await parseList(page)
   }
 }
 
 async function parseList(page){
   console.log(`Parsing page ${page}`)
+
   const request = await axios.get(`http://www.europe1.fr/emissions/au-coeur-de-l-histoire?page=${page}`)
   const $ = cheerio.load(request.data)
   const emissions = cheerio($('.listing_emissions li'))
@@ -45,12 +46,12 @@ async function parsePage(date,url){
   const $ = cheerio.load(request.data)
   const title = $('h1').text()
 
-  const start = request.data.search('file: ')
-  const end = request.data.search('mp3')
+  const start = request.data.search("file: '")
+  const end = request.data.search(".mp3'")
   
   let mp3 =''
   if(start !== -1 && end !==-1)
-    mp3 = request.data.substring(start+7,end+3)
+    mp3 = request.data.substring(start+7,end+4)
   
   csvStream.write({
     date: date,
